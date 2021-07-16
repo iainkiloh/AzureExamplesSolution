@@ -1,0 +1,13 @@
+az group create -n mycoolwebappsRG -l uksouth
+
+az appservice plan create --name mycoolwebapp-service-plan --resource-group mycoolwebappsRG --sku S1 --is-linux -l uksouth
+
+az webapp create -g mycoolwebappsRG -p mycoolwebapp-service-plan  -n helloworldk746099 --runtime "DOTNETCORE|3.1"
+
+#az webapp up -g mycoolwebappsRG -n helloworldk746098 -l uksouth --sku F1 --runtime "DOTNETCORE|3.1" --os-type linux
+
+az webapp list
+
+# deploying the webapp using the ARM template and parameter files
+az deployment group create --resource-group mycool-webapp-RG --template-file azuredeploy.json --parameters azuredeploy.parameters.json --confirm-with-what-if
+

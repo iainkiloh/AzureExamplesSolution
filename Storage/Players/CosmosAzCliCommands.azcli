@@ -1,0 +1,95 @@
+# account level https://docs.microsoft.com/en-us/cli/azure/cosmosdb?view=azure-cli-latest#az_cosmosdb_create
+# create new cosmosdb account
+az cosmosdb create what-if --name mycool-cosmos-account --resource-group mycoolCosmos --locations regionsName=uksouth --subscription 41dbbc74-9b9b-4bc0-8bd3-f810949ce1a5
+
+# so docs have these commands for working with cosmos db, however these are out of date
+# note this params --name and --db-name 
+az cosmosdb database create --name mycool-cosmos-account --resource-group mycoolCosmos --db-name GamingPlatform
+# whereas the newer sql database commands have --account-name and -name instead
+az cosmosdb sql database create --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+
+#sql dbs in the cosmosdb account
+az cosmosdb sql database list --account-name mycool-cosmos-account --resource mycoolCosmos
+
+# check sql db exists
+az cosmosdb sql database exists --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+
+#similar syuntax for others, however these only work when run in an account which is supporting Mogodb or cassandra, or gremlin etc.
+az cosmosdb mongodb database exists --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+az cosmosdb cassandra database exists --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+az cosmosdb gremlin database exists --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+
+# get details on a specific sql db
+az cosmosdb sql database show --account-name mycool-cosmos-account --resource-group mycoolCosmos --name GamingPlatform2
+
+# create sql container under an existing sql database
+az cosmosdb sql container create -g mycoolCosmos -a mycool-cosmos-account -d GamingPlatform2 -n Profiles --partition-key-path "/profileId" --throughput "400"
+az cosmosdb sql container create --resource-group mycoolCosmos --account-name mycool-cosmos-account --database-name GamingPlatform2 --name Profiles --partition-key-path "/profileId" --throughput "400"
+
+#note --idx (indexing policy) expects a file or string json
+# --ttl item expiration - leave out for non-expiring items
+# throughout default is 400 RUs (minimum) - do not specify if throughput being dictated at database level
+
+# list comntainers within database
+az cosmosdb sql container list --account-name mycool-cosmos-account --database-name GamingPlatform2 --resource-group mycoolCosmos
+
+az cosmosdb sql container show --account-name
+                               --database-name
+                               --name
+                               --resource-group
+
+# update a container (index policy and ttl can be updated)
+az cosmosdb sql container update --account-name
+                                 --database-name
+                                 --name
+                                 --resource-group
+                                 [--idx]
+                                 [--subscription]
+                                 [--ttl]
+
+# show container throughput settings
+az cosmosdb sql container throughput show --account-name mycool-cosmos-account --database-name GamingPlatform2 --name Profiles --resource-group mycoolCosmos 
+
+az cosmosdb sql container throughput show --account-name mycool-cosmos-account --database-name GamingPlatform2 --name Profiles --resource-group mycoolCosmos --query "resource.throughput"
+
+
+# to update throughput setting we use a specific command
+az cosmosdb sql container throughput update --account-name
+                                            --database-name
+                                            --name
+                                            --resource-group
+                                            [--max-throughput]
+                                            [--subscription]
+                                            [--throughput]
+
+az cosmosdb sql container throughput update --account-name mycool-cosmos-account --database-name GamingPlatform2 --name Profiles --resource-group mycoolCosmos  --throughput "500"
+
+# to move between autoscale and manually provisioned throughput
+az cosmosdb sql container throughput migrate --account-name
+                                             --database-name
+                                             --name
+                                             --resource-group
+                                             --throughput-type {autoscale, manual}
+                                             [--subscription]
+
+# delete container
+az cosmosdb sql container delete --account-name
+                                 --database-name
+                                 --name
+                                 --resource-group
+                                 [--subscription]
+                                 [--yes]
+
+az cosmosdb sql container delete --account-name mycool-cosmos-account --database-name GamingPlatform2 --name Profiles --resource-group mycoolCosmos
+
+
+
+# delete cosmosdb database -- check the resource-group-name inout param?? why?????
+az cosmosdb database delete --name mycool-cosmos-account --db-name GamingPlatform2 --resource-group-name mycoolCosmos
+# or more up to date
+az cosmosdb sql database delete --account-name mycool-cosmos-account --name GamingPlatform2 --resource-group mycoolCosmos
+
+# delete the cosmosdb account
+az cosmosdb delete --name mycool-cosmos-account --resource-group mycoolCosmos
+
+

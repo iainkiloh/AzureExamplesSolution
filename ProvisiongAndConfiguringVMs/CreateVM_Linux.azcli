@@ -1,0 +1,30 @@
+#create linux vm basic settings
+az group create --name "KilohAzureLessons1_RG" --location "UK South"
+
+#note the ssh key is a key which already exists on the machine on which command is executed
+az vm create ^
+    --resource-group "KilohAzureLessons1_RG" ^
+    --name "klinuxVM2" ^
+    --image "UbuntuLTS" ^
+    --admin-username "something" ^
+    --authentication-type "ssh" ^
+    --ssh-key-value ~/.ssh/testingkey.pub
+
+#open port for access
+az vm open-port ^
+    --resource-group "KilohAzureLessons1_RG" ^
+    --name "klinuxVM2" ^
+    --port "22"
+
+#get public ips for the new vm
+az vm list-ip-addresses ^
+    --resource-group "KilohAzureLessons1_RG" ^
+    --name "klinuxVM2"
+
+#ssh into the vm - uses the private key associated with the ssh key pair
+#to generate an ssh key you can use ssh-keygen -m PEM -t rsa -b 4096
+ssh -i  ~/.ssh/testingkey adminusernamen@publicip:port
+
+#delete resource group
+az group delete --name "KilohAzureLessons1_RG"
+

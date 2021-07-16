@@ -1,0 +1,21 @@
+#create windows vm basic settings
+#az group create --name $RESOURCEGROUPNAME --location $LOCATION
+
+az vm create \
+    --resource-group "KilohAzureLessons1_RG" \
+    --name "cli_created_windows_vm1" \
+    --image "win2019datacenter" \
+    --admin-username "ADMINUSERNAME" \
+    --admin-password "ADMINPASSWORD"
+
+az vm open-port \
+    --resource-group "KilohAzureLessons1_RG" \
+    --name "cli_created_windows_vm1" \
+    --port "3389"
+
+az vm list-ip-addresses \
+    --resource-group "KilohAzureLessons1_RG" \
+    --name "cli_created_windows_vm1"
+
+
+

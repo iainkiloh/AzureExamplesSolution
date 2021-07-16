@@ -1,0 +1,96 @@
+
+#create ACR
+az group create --name "KilohContainerRegistryRG" --location "UK South"
+az acr create --resource-group "KilohContainerRegistryRG" --name "khcreg1" --sku "Standard"
+
+#login
+az acr login --name "khcreg1"
+
+#get details - includes login server url, which we use for tagging the container image
+az acr show --name "khcreg1"
+
+# docker commands for tagging an already build container image, and then pushing to the acr
+# docker tag calculatorapidemo:v5 khcreg1.azurecr.io/calculatorapidemo:v5
+docker push khcreg1.azurecr.io/calculatorapidemo:v5
+
+# now we can check the push has worked
+# note images in an acr are referred to as Repositories for some strange reason
+az acr login --name "khcreg1"
+az acr repository list --name "khcreg1" --output "table"
+az acr repository show-tags --name "khcreg1" --repository "calculatorapidemo" --output "table"
+
+# we can also ship and build in acr with az acr build
+# IMPORTANT: do this in the directory with the actual dockerfile as everything is zipped
+# and sent to the acr and the dockerfile commands are executed in the ACR itself
+#az acr build --image "calculatorapidemo:v6-acr-task" --registry "khcreg1" C:\Users\IainKiloh\source\repos\CalculatorApi
+
+#------------------------------------------------------------------------------------------------
+# Deploying the image into a container runing in ACI (Azure Container Instances) - Serverless containers
+
+# 1st step Role Based Pull access is required for the command to pul the image and run it in ACI
+# Set up a Service Prncipal with the required role based access
+# we need the resource id of our ACR
+
+$ACR_REGISTRY_ID=$(az acr show --name "khcreg1" --query "id" --output "tsv")
+echo $ACR_REGISTRY_ID
+
+$SP_NAME="acr-service-principal"
+$SP_PWD=$(az ad sp create-for-rbac --name "http://khcreg1-pull" --scopes $ACR_REGISTRY_ID --role "acrpull" --query "password" --output tsv)
+echo $SP_NAME
+echo $SP_PWD # blahGuid
+
+$SP_APPID=$(az ad sp show --id "http://khcreg1-pull" --query "appId" --output "tsv")
+echo $SP_APPID # blahGuid    - we use this as the username when pulling from the ACR
+
+# step 2 run the container
+$ACR_LOGINSERVER=$(az acr show --name "khcreg1" --query "loginServer" --output "tsv")
+echo $ACR_LOGINSERVER 
+
+# create group if required
+#az group create --name "KilohsContainers" --location "UK South"
+
+az container create --resource-group "KilohsContainers" `
+ --name "calculatordemoapi-cli" `
+ --dns-name-label "calculatordemoapi-cli" `
+ --ports "80" `
+ --image "khcreg1.azurecr.io/calculatorapidemo:v5" `
+ --registry-login-server "khcreg1.azurecr.io" `
+ --registry-username $SP_APPID `
+ --registry-password $SP_PWD
+
+# use az container list to view info on containers
+az container list --resource-group "KilohsContainers"
+az container list --resource-group "KilohsContainers" --query [].[name,ipAddress.fqdn] --output "table"
+
+# using JMES path to qquery and format output column names (default output is json)
+az container list --resource-group "KilohsContainers" --query "[].{Name:name,FQDN:ipAddress.fqdn}" --output "table"
+
+# use as container show to view curretn status od the container
+az container show --resource-group "KilohsContainers" --name "calculatordemoapi-cli"
+
+az container stop --resource-group "KilohsContainers" --name "calculatordemoapi-cli"
+az container delete --resource-group "KilohsContainers" --name "calculatordemoapi-cli"
+
+az container delete --resource-group "KilohsContainers" --name "calculatorapidemo-cli"
+
+az group delete --name "KilohsContainers"
+az group delete --name "KilohContainerRegistryRG"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

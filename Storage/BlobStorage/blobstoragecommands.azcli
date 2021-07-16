@@ -1,0 +1,30 @@
+az storage account create \
+  --kind StorageV2 \
+  --resource-group [sandbox resource group name] \
+  --location centralus \
+  --name [your-unique-storage-account-name]
+
+  az storage account create \
+  --name $AZURE_STORAGE_ACCOUNT \
+  --resource-group $RESOURCE_GROUP \
+  --location westus \
+  --kind StorageV2 \
+  --sku Standard_LRS \
+  --encryption-services blob
+
+  az storage account keys list \
+  --account-name $AZURE_STORAGE_ACCOUNT \
+  --resource-group $RESOURCE_GROUP \
+  --output table
+
+  az storage container create --name records
+
+  az storage blob upload --account-name kilohcosmossa --name cars --container-name container1 --file satt-special-cars.csv --account-key blah==
+
+  az storage blob list --container-name container1 --account-name kilohcosmossa --output table
+
+  z storage blob download --container-name container1 --name cars --file cars2.csv --account-name kilohcosmossa --account-key blah==
+
+  #upload for static website in blob container - note configure sa to be used for static website in portal 1st
+  az storage blob upload-batch --account-name mystaticweb --account-key blah== -d '$web' -s .
+

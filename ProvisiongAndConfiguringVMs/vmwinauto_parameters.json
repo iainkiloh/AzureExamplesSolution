@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "uksouth"
+        },
+        "networkInterfaceName": {
+            "value": "vmauto1142"
+        },
+        "networkSecurityGroupName": {
+            "value": "vmauto1-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "RDP",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "3389"
+                    }
+                }
+            ]
+        },
+        "subnetName": {
+            "value": "psdemo-win-vm"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/41dbbc74-9b9b-4bc0-8bd3-f810949ce1a5/resourceGroups/KilohAzureLessons1_RG/providers/Microsoft.Network/virtualNetworks/psdemo-win-vm"
+        },
+        "publicIpAddressName": {
+            "value": "vmauto1-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": {
+            "value": "Basic"
+        },
+        "virtualMachineName": {
+            "value": "vmauto1"
+        },
+        "virtualMachineComputerName": {
+            "value": "vmauto1"
+        },
+        "osDiskType": {
+            "value": "Premium_LRS"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_DS1_v2"
+        },
+        "adminUsername": {
+            "value": "someadminusername"
+        },
+        "adminPassword": {
+            "reference": {
+              "keyVault": {
+                "id": "/subscriptions/41dbbc74-9b9b-4bc0-8bd3-f810949ce1a5/resourceGroups/KilohAzureLessons1_RG/providers/Microsoft.KeyVault/vaults/MykeyVaultName"
+              },
+              "secretName": "AdminPassword"
+            }
+        },
+        "patchMode": {
+            "value": "AutomaticByOS"
+        }
+    }
+}
