@@ -1,7 +1,7 @@
 #vars setup
 storage_account="kilohcosmossa"
 container_name="container1"
-access_key="WFuXDdDLZK6OmyeS+0Vhihd4zuaX9eCOhNRDy/utDDIvMaAL4MjPj0w0Qx60jPgk1kMvilPazHqwHIcmnxV94A=="
+access_key="myAccessKey=="
 blob_store_url="blob.core.windows.net"
 authorization="SharedKey"
 storage_service_version="2011-08-18"
