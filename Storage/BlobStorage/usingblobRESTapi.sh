@@ -1,5 +1,5 @@
 #vars setup
-storage_account="kilohcosmossa"
+storage_account="myccosmossa"
 container_name="container1"
 access_key="myAccessKey=="
 blob_store_url="blob.core.windows.net"
