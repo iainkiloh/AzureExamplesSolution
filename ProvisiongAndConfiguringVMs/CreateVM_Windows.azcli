@@ -1,21 +1,17 @@
 #create windows vm basic settings
-#az group create --name $RESOURCEGROUPNAME --location $LOCATION
 
-az vm create \
-    --resource-group "KilohAzureLessons1_RG" \
-    --name "cli_created_windows_vm1" \
-    --image "win2019datacenter" \
-    --admin-username "ADMINUSERNAME" \
-    --admin-password "ADMINPASSWORD"
+az group create --name "RecoveryDemoRG" --location "UK West"
 
-az vm open-port \
-    --resource-group "KilohAzureLessons1_RG" \
-    --name "cli_created_windows_vm1" \
-    --port "3389"
+az group create --name "KilohDemoRG" --location "UK South"
 
-az vm list-ip-addresses \
-    --resource-group "KilohAzureLessons1_RG" \
-    --name "cli_created_windows_vm1"
+az vm create --resource-group "KilohDemoRG" --name "dumbassvm" --image "win2019datacenter" --admin-username "Admin999999!" --admin-password "Admin999999!"
 
+az vm open-port --resource-group "KilohDemoRG" --name "dumbassvm" --port "3389"
+
+az vm list-ip-addresses --resource-group "KilohDemoRG" --name "dumbassvm" 
+
+az network nsg list --resource-group "KilohDemoRG"
+
+az group delete --name "KilohDemoRG"
 
 
